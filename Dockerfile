@@ -36,7 +36,7 @@ RUN composer dump-autoload --optimize --no-dev --no-scripts
 # -------------------------------------------------------------
 # Stage 3: Final Production & Development PHP-FPM Runtime
 # -------------------------------------------------------------
-FROM php:8.3-fpm-alpine AS runtime
+FROM php:8.4-fpm-alpine AS runtime
 
 # Install system dependencies
 RUN apk add --no-cache \
