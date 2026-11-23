@@ -99,6 +99,9 @@ services:
   # Background Queue Worker
   # -----------------------------------------------------------
   queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: webotapp-erp:latest
     container_name: webotapp_queue
     restart: unless-stopped
