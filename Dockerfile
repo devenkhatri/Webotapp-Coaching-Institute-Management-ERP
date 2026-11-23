@@ -31,7 +31,7 @@ RUN composer install \
 COPY app app/
 COPY database database/
 
-RUN composer dump-autoload --optimize --no-dev
+RUN composer dump-autoload --optimize --no-dev --no-scripts
 
 # -------------------------------------------------------------
 # Stage 3: Final Production & Development PHP-FPM Runtime

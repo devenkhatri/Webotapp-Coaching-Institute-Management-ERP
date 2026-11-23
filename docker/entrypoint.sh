@@ -33,6 +33,11 @@ if [ "$DB_CONNECTION" = "sqlite" ] && [ ! -f "${DB_DATABASE:-/var/www/html/datab
     chown -R www-data:www-data "$(dirname "${DB_DATABASE:-/var/www/html/database/database.sqlite}")"
 fi
 
+# Run package discovery if artisan is present
+if [ -f /var/www/html/artisan ]; then
+    php artisan package:discover --ansi || true
+fi
+
 echo "Laravel container initialization completed."
 
 # Execute CMD passed to container
