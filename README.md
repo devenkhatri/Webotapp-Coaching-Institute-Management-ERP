@@ -111,3 +111,65 @@ http://127.0.0.1:8000
 ```
 - Direct access: `http://127.0.0.1:8000/login`
 - Sample Certificate Verification: `http://127.0.0.1:8000/verify-certificate/VERIF-PVQUKXJXJKBP`
+
+---
+
+## 7. Docker Setup & Usage Guide
+
+The application is fully containerized using a production-grade multi-stage Docker build and Docker Compose orchestrator.
+
+### Architecture Overview
+
+```text
+Host Port 8000 ➔ webserver (Nginx 1.27 Alpine)
+                     │ (FastCGI :9000)
+                     ▼
+                  app (PHP 8.3 FPM Alpine)
+                     ├── Multi-stage build (Node 20 Vite assets + Composer 2 dependencies)
+                     ├── PDO MySQL, Redis, GD, BCMath, Opcache extensions
+                     ├── db (MySQL 8.4 LTS on internal port 3306)
+                     ├── redis (Redis 7 Alpine on internal port 6379)
+                     └── queue (Laravel Background Worker)
+```
+
+### Quick Start (Step-by-Step)
+
+#### 1. Configure Docker Environment File
+Copy the pre-configured Docker environment template:
+```bash
+cp .env.docker.example .env
+```
+*(Optionally modify database passwords or exposed ports in `.env` if required).*
+
+#### 2. Build and Start the Docker Containers
+Build the multi-stage image (compiling frontend assets and vendor dependencies) and start all services in detached mode:
+```bash
+docker compose up -d --build
+```
+
+#### 3. Run Database Migrations and Pre-populate Demo Data
+Execute database migration and seed the comprehensive demo datasets (covering all Section 45 specifications):
+```bash
+docker compose exec app php artisan migrate --seed
+```
+
+#### 4. Access the Application
+- Open your browser at: **[http://localhost:8000](http://localhost:8000)**
+- Use the one-click demo login buttons or credentials from Section 2 (e.g. `admin@coaching.com` / `password123`).
+
+---
+
+### Common Docker Operations
+
+| Task | Command |
+|---|---|
+| **View Service Status** | `docker compose ps` |
+| **Stream Application Logs** | `docker compose logs -f app` |
+| **Stream Web Server Logs** | `docker compose logs -f webserver` |
+| **Run Artisan Commands** | `docker compose exec app php artisan <command>` |
+| **Run Automated Tests** | `docker compose exec app php artisan test` |
+| **Run Database Migrations** | `docker compose exec app php artisan migrate` |
+| **Interactive Container Shell** | `docker compose exec app sh` |
+| **Stop All Containers** | `docker compose down` |
+| **Stop & Reset Volumes** | `docker compose down -v` |
+
